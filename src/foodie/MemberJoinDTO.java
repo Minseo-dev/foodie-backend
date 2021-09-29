@@ -1,46 +1,40 @@
 package foodie;
 
 public class MemberJoinDTO {
-  private String ID;
-  private String Password;
-  private String Name;
-  private String nickName;
+  private String memberID;
+  private String memberPassword;
+  private String memberName;
+  private String memberNickName;
 
-  public MemberJoinDTO(String id, String password,String name,String nickName){
-    ID =id;
-    Password =password;
-    Name =name;
-    this.nickName=nickName;
+  public String getMemberID() {
+    return memberID;
   }
 
-  public String getID() {
-    return ID;
+  public String getMemberPassword() {
+    return memberPassword;
   }
 
-  public String getPassword() {
-    return Password;
-  }
-  public String getName() {
-    return Name;
+  public String getMemberName() {
+    return memberName;
   }
 
-  public String getNickName() {
-    return nickName;
+  public String getMemberNickName() {
+    return memberNickName;
   }
 
-  public void setName(String name) {
-    Name = name;
+  public void setMemberID(String memberID) {
+    this.memberID = memberID;
   }
 
-  public void setID(String ID) {
-    this.ID = ID;
+  public void setMemberPassword(String memberPassword) {
+    this.memberPassword = memberPassword;
   }
 
-  public void setPassword(String password) {
-    this.Password = password;
+  public void setMemberName(String memberName) {
+    this.memberName = memberName;
   }
 
-  public void setNickName(String nickName) {
-    this.nickName = nickName;
+  public void setMemberNickName(String memberNickName) {
+    this.memberNickName = memberNickName;
   }
 }
