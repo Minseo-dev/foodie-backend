@@ -163,3 +163,6 @@ $RECYCLE.BIN/
 
 #확장자가 .class인 파일은 무시합니다.
 *.class
+
+#확장자가 .iml 파일은 무시합니다.
+*.iml
