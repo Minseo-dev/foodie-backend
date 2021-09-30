@@ -11,33 +11,32 @@ import java.sql.Types;
 
 public class InsertService {
 
-  public void insertMember(MemberJoinDTO[] member) {
-    final String query = "INSERT INTO MEMBER(ID, PASSWORD, NAME, NICKNAME) VALUSE (?,?,?)";
+  public void insertMember(final MemberJoinDTO member) {
+    final String query = "INSERT INTO MEMBER(ID, PASSWORD, NAME, NICKNAME) VALUES (?,?,?,?)";
+
     try (Connection connection = MemberJoinDAO.setConnection();
          PreparedStatement pstmt = connection.prepareStatement(query)) {
       connection.setAutoCommit(false);
 
-      for (int i = 0; i < member.length; i++) {
-        if (member[i].getMemberID() == null && member[i].getMemberPassword()==null&&member[i].getMemberName()==null) break;
+      pstmt.setString(1, member.getMemberID());
+      pstmt.setString(2, member.getMemberPassword());
+      pstmt.setString(3, member.getMemberName());
 
-        pstmt.setString(1,member[i].getMemberID());
-        pstmt.setString(2,member[i].getMemberPassword());
-
-        if(member[i].getMemberNickName()==null){
-          pstmt.setNull(3, Types.VARCHAR);
-        }else{
-          pstmt.setString(3,member[i].getMemberNickName());
-        }
-
-        pstmt.addBatch();
-        pstmt.clearParameters();
+      if (member.getMemberNickName() == null) {
+        pstmt.setNull(4, Types.VARCHAR);
+      } else {
+        pstmt.setString(4, member.getMemberNickName());
       }
-      int[] retValue = pstmt.executeBatch();
+
+
+      int retValue = pstmt.executeUpdate();
       connection.commit();
-      System.out.println(retValue.length +"건의 사항이 처리되었습니다.");
+      System.out.println(retValue + "건의 사항이 처리되었습니다.");
 
     } catch (SQLException e) {
       e.printStackTrace();
     }
+
   }
+
 }
