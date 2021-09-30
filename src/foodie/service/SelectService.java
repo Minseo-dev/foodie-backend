@@ -1,8 +1,6 @@
 package foodie.service;
 
 import foodie.MemberJoinDAO;
-import foodie.exception.AuthenException;
-import foodie.exception.SearchException;
 
 
 import java.sql.Connection;
@@ -31,6 +29,7 @@ public class SelectService {
     }
   }
 
+
   public void getMemberID(String memberID) {
     final String query = "SELECT * FROM MEMBER WHERE ID = ?";
 
@@ -52,6 +51,26 @@ public class SelectService {
 
       e.printStackTrace();
     }
+  }
+
+  public boolean checkMemberID(String memberID) {
+    final String query = "SELECT ID FROM MEMBER";
+
+    try (Connection connection = MemberJoinDAO.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          if (rs.getString("ID").equals(memberID)) {
+            return true;
+          }
+        }
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
   }
 
 }

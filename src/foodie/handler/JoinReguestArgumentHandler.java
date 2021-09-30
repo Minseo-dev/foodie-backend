@@ -2,11 +2,12 @@ package foodie.handler;
 
 
 import foodie.exception.AuthenException;
+import foodie.service.SelectService;
 
-import java.util.Arrays;
 import java.util.regex.Pattern;
 
 public class JoinReguestArgumentHandler extends Throwable {
+  SelectService selectService = new SelectService();
 
   public void idStandard(String str) throws AuthenException {
 
@@ -33,6 +34,10 @@ public class JoinReguestArgumentHandler extends Throwable {
 
     if (c1 == 0 || c2 == 0) {
       throw new AuthenException("아이디는 영문자와 숫자를 혼용해서 만들어주세요.");
+    }
+
+    if(selectService.checkMemberID(str)==false){
+      throw new AuthenException("중복된 아이디입니다.");
     }
 
   }
