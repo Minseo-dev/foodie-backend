@@ -1,15 +1,23 @@
-package foodie.exception;
+package foodie.handler;
+
 
 import foodie.exception.AuthenException;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
-public class JoinException {
+public class JoinReguestArgumentHandler extends Throwable {
 
   public void idStandard(String str) throws AuthenException {
 
-    if (str.length() < 0 || str.length() > 20) {
+    if (str.length() < 3 || str.length() > 19) {
       throw new AuthenException("3자~18자 이내의 아이디만 가능합니다.");
+    }
+
+    String[] strings = str.split(" ");
+
+    if (strings.length > 1) {
+      throw new AuthenException("띄어쓰기는 사용할 수 없습니다.");
     }
 
     int c1 = 0, c2 = 0;
