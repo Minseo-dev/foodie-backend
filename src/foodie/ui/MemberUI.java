@@ -1,19 +1,19 @@
 package foodie.ui;
 
-import foodie.member.MemberServiceFunction;
+import foodie.member.MemberServiceOption;
 
 import java.util.Scanner;
 
-enum ServiceOption {TERMINATED, LOGIN, FIND_ID, SIGNUP}
+enum ServiceOption {TERMINATED, LOGIN, FIND_ID, FIND_PASSWORD, SIGNUP}
 
 public class MemberUI {
   Scanner sc = new Scanner(System.in);
 
-  MemberServiceFunction memberServiceFunction = new MemberServiceFunction();
+  MemberServiceOption memberServiceOption = new MemberServiceOption();
 
   private ServiceOption menu() {
     System.out.println("Welcome to Foodie");
-    int number = getNumInput("[1] 로그인 [2] 아이디 찾기 [3] 회원가입 [0] 종료");
+    int number = getNumInput("[1] 로그인 [2] 아이디 찾기 [3] 비밀번호 찾기 [4] 회원가입 [0] 종료");
     return ServiceOption.values()[number];
   }
 
@@ -28,12 +28,17 @@ public class MemberUI {
       serviceOption = menu();
       switch (serviceOption) {
         case LOGIN:
+          memberServiceOption.loginMember();
+          System.out.println("로그인 성공");
           break;
         case FIND_ID:
-          memberServiceFunction.findId();
+          memberServiceOption.findId();
+          break;
+        case FIND_PASSWORD:
+          memberServiceOption.findPassword();
           break;
         case SIGNUP:
-          memberServiceFunction.signUpMember();
+          memberServiceOption.signUpMember();
           System.out.println("회원가입이 완료되었습니다.");
           break;
       }
