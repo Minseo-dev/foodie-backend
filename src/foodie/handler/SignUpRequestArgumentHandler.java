@@ -10,13 +10,13 @@ public class SignUpRequestArgumentHandler extends Throwable {
 
   MemberDAO memberDAO = new MemberDAO();
 
-  public void checkIDStandard(String str) throws AuthenException {
+  public void checkIDStandard(String id) throws AuthenException {
 
-    if (str.length() < 3 || str.length() > 19) {
+    if (id.length() < 3 || id.length() > 19) {
       throw new AuthenException("3자~18자 이내의 아이디만 가능합니다.");
     }
 
-    String[] strings = str.split(" ");
+    String[] strings = id.split(" ");
 
     if (strings.length > 1) {
       throw new AuthenException("띄어쓰기는 사용할 수 없습니다.");
@@ -24,8 +24,8 @@ public class SignUpRequestArgumentHandler extends Throwable {
 
     int c1 = 0, c2 = 0;
 
-    for (int i = 0; i < str.length(); i++) {
-      char ch = str.charAt(i);
+    for (int i = 0; i < id.length(); i++) {
+      char ch = id.charAt(i);
       if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z')) {
         c1++;
       } else if (ch >= '0' && ch <= '9') {
@@ -37,7 +37,7 @@ public class SignUpRequestArgumentHandler extends Throwable {
       throw new AuthenException("아이디는 영문자와 숫자를 혼용해서 만들어주세요.");
     }
 
-    if(memberDAO.checkMemberID(str)==false){
+    if (memberDAO.checkMemberID(id) == false) {
       throw new AuthenException("중복된 아이디입니다.");
     }
 
@@ -63,8 +63,8 @@ public class SignUpRequestArgumentHandler extends Throwable {
   }
 
   public void nameStandard(String name) throws AuthenException {
-    boolean check = Pattern.matches("^[가-힣]*$", name);
-    if (!check) {
+    boolean checkName = Pattern.matches("^[가-힣]*$", name);
+    if (!checkName) {
       throw new AuthenException("이름은 한글로 입력하세요.");
     }
   }
@@ -74,6 +74,17 @@ public class SignUpRequestArgumentHandler extends Throwable {
     if (nickName.length() < 0 || nickName.length() > 20) {
       throw new AuthenException("3자~18자 이내의 별명만 가능합니다.");
     }
+  }
+
+  public void emailStandard(String email) throws AuthenException {
+    boolean checkEmail = Pattern.matches(" /(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))/", email);
+    String[] strings = email.split(" ");
+
+    if (strings.length > 1 || !checkEmail) {
+      throw new AuthenException("이메일을 잘못 입력하셨습니다.");
+    }
+
+
   }
 }
 

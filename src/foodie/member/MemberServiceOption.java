@@ -56,8 +56,11 @@ public class MemberServiceOption {
     boolean checkPassword = true;
     boolean checkName = true;
     boolean checkNickName = true;
+    boolean checkEmail = true;
 
     String password;
+
+
 
     while (checkId) {
       try {
@@ -120,6 +123,19 @@ public class MemberServiceOption {
         System.out.println(e.getMessage());
       }
 
+      while (checkEmail){
+        try {
+          System.out.print("* 이메일 :");
+          signUpDTO.setMemberEmail(sc.nextLine());
+
+          signUpRequestArgumentHandler.emailStandard(signUpDTO.getMemberEmail());
+
+          checkEmail=false;
+
+        }catch (AuthenException e){
+          System.out.println(e.getMessage());
+        }
+      }
     }
     memberDAO.insertMember(signUpDTO);
   }

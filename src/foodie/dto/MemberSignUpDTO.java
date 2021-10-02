@@ -1,13 +1,14 @@
 package foodie.dto;
 
 public class MemberSignUpDTO {
-  private String memberID;
+  private String memberId;
   private String memberPassword;
   private String memberName;
   private String memberNickName;
+  private String memberEmail;
 
-  public String getMemberID() {
-    return memberID;
+  public String getMemberId() {
+    return memberId;
   }
 
   public String getMemberPassword() {
@@ -22,8 +23,12 @@ public class MemberSignUpDTO {
     return memberNickName;
   }
 
-  public void setMemberID(String memberID) {
-    this.memberID = memberID;
+  public String getMemberEmail() {
+    return memberEmail;
+  }
+
+  public void setMemberId(String memberId) {
+    this.memberId = memberId;
   }
 
   public void setMemberPassword(String memberPassword) {
@@ -36,5 +41,9 @@ public class MemberSignUpDTO {
 
   public void setMemberNickName(String memberNickName) {
     this.memberNickName = memberNickName;
+  }
+
+  public void setMemberEmail(String memberEmail) {
+    this.memberEmail = memberEmail;
   }
 }
