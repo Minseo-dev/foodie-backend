@@ -2,14 +2,15 @@ package foodie.handler;
 
 
 import foodie.exception.AuthenException;
-import foodie.service.SelectService;
+import foodie.service.MemberDAO;
 
 import java.util.regex.Pattern;
 
-public class JoinReguestArgumentHandler extends Throwable {
-  SelectService selectService = new SelectService();
+public class SignUpRequestArgumentHandler extends Throwable {
 
-  public void idStandard(String str) throws AuthenException {
+  MemberDAO memberDAO = new MemberDAO();
+
+  public void checkIDStandard(String str) throws AuthenException {
 
     if (str.length() < 3 || str.length() > 19) {
       throw new AuthenException("3자~18자 이내의 아이디만 가능합니다.");
@@ -36,7 +37,7 @@ public class JoinReguestArgumentHandler extends Throwable {
       throw new AuthenException("아이디는 영문자와 숫자를 혼용해서 만들어주세요.");
     }
 
-    if(selectService.checkMemberID(str)==false){
+    if(memberDAO.checkMemberID(str)==false){
       throw new AuthenException("중복된 아이디입니다.");
     }
 
