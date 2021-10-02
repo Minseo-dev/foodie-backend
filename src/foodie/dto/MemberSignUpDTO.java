@@ -1,6 +1,6 @@
-package foodie;
+package foodie.dto;
 
-public class MemberJoinDTO {
+public class MemberSignUpDTO {
   private String memberID;
   private String memberPassword;
   private String memberName;
