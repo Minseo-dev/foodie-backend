@@ -40,9 +40,10 @@ public class MemberServiceOption {
   }
 
   public void findId() {
-    System.out.print("검색할 아이디 입력 : ");
-    String memberID = sc.next();
-    memberDAO.getMemberID(memberID);
+    System.out.print("이름 : ");
+    String memberName = sc.next();
+    System.out.println("이메일 : ");
+//    memberDAO.getMemberID();
     System.out.println();
 
   }

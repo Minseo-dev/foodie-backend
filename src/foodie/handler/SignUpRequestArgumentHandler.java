@@ -4,9 +4,12 @@ package foodie.handler;
 import foodie.exception.AuthenException;
 import foodie.service.MemberDAO;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SignUpRequestArgumentHandler extends Throwable {
+
+ public static final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
 
   MemberDAO memberDAO = new MemberDAO();
 
@@ -37,7 +40,7 @@ public class SignUpRequestArgumentHandler extends Throwable {
       throw new AuthenException("아이디는 영문자와 숫자를 혼용해서 만들어주세요.");
     }
 
-    if (memberDAO.checkMemberID(id) == false) {
+    if (memberDAO.checkID(id) == true) {
       throw new AuthenException("중복된 아이디입니다.");
     }
 
@@ -76,12 +79,19 @@ public class SignUpRequestArgumentHandler extends Throwable {
     }
   }
 
+  public static boolean validate(String email){
+    Matcher matcher = EMAIL_REGEX.matcher(email);
+    return matcher.find();
+  }
   public void emailStandard(String email) throws AuthenException {
-    boolean checkEmail = Pattern.matches(" /(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))/", email);
+   
     String[] strings = email.split(" ");
-
-    if (strings.length > 1 || !checkEmail) {
+    
+    if (strings.length > 1) {
       throw new AuthenException("이메일을 잘못 입력하셨습니다.");
+    }
+    if (!validate(email)) {
+      throw new AuthenException("이메일 유효 없음.");
     }
 
 
