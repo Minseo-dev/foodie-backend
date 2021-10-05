@@ -1,0 +1,253 @@
+package foodie.dao;
+
+import foodie.DBAccess;
+import foodie.dto.MemberSignUpDTO;
+import foodie.dto.MemberUpdateDTO;
+
+import java.sql.*;
+
+public class MemberDAO {
+
+  //회원 로그인
+  public boolean loginMember(String memberId, String memberPassword) {
+    final String query = "SELECT ID, PASSWORD FROM MEMBER WHERE ID = ? AND PASSWORD =?";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+      pstmt.setString(1, memberId);
+      pstmt.setString(2, memberPassword);
+
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          return true;
+        }
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  //회원가입
+  public void insertMember(final MemberSignUpDTO member) {
+    final String query = "INSERT INTO MEMBER(ID, PASSWORD, NAME, NICKNAME,EMAIL) VALUES (?,?,?,?,?)";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+      connection.setAutoCommit(false);
+
+      pstmt.setString(1, member.getMemberId());
+      pstmt.setString(2, member.getMemberPassword());
+      pstmt.setString(3, member.getMemberName());
+
+      if (member.getMemberNickName() == null) {
+        pstmt.setNull(4, Types.VARCHAR);
+      } else {
+        pstmt.setString(4, member.getMemberNickName());
+      }
+      if (member.getMemberNickName() == null) {
+        pstmt.setNull(5, Types.VARCHAR);
+      } else {
+        pstmt.setString(5, member.getMemberEmail());
+      }
+
+
+      int retValue = pstmt.executeUpdate();
+      connection.commit();
+      System.out.println(retValue + "건의 사항이 처리되었습니다.");
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  //회원 아이디,이름 찾기
+  public boolean checkIdName(String memberName, String memberEmail) {
+    final String query = "SELECT ID, NAME FROM MEMBER WHERE ID = ? AND NAME = ?  ";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+      pstmt.setString(1, memberName);
+      pstmt.setString(2, memberEmail);
+
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          return true;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  //회원 ID 찾기
+  public String getMemberID(String memberName, String memberEmail) {
+    final String query = "SELECT ID FROM MEMBER WHERE NAME = ? AND EMAIL = ? ";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+      pstmt.setString(1, memberName);
+      pstmt.setString(2, memberEmail);
+
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          System.out.print("[아이디] " + rs.getString("ID"));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  //회원 아이디 중복 check
+  public boolean duplicateCheckID(String memberID) {
+    final String query = "SELECT ID FROM MEMBER WHERE ID = ?";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+      pstmt.setString(1, memberID);
+
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          return true;
+        }
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  //회원 아이디,이름 찾기
+  public boolean duplicateCheckName(String memberName) {
+    final String query = "SELECT ID, NAME FROM MEMBER WHERE NAME = ?  ";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+      pstmt.setString(1, memberName);
+
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          return true;
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+  //회원 비밀번호, 별명 수정
+  public void updateMemberInfoAll(MemberSignUpDTO[] member) {
+    final String query = "UPDATE MEMBER SET PASSWORD = ?, NICKNAME =? WHERE ID =?";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+      connection.setAutoCommit(false);
+
+      for (int i = 0; i < member.length; i++) {
+        if (member[i].getMemberId() == null) break;
+
+        pstmt.setString(1, member[i].getMemberPassword());
+        pstmt.setString(2, member[i].getMemberNickName());
+
+        pstmt.addBatch();
+        pstmt.clearParameters();
+      }
+      int[] retValue = pstmt.executeBatch();
+      connection.commit();
+
+      System.out.println(retValue.length + "건의 사항이 처리되었습니다.");
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+
+  }
+
+  //회원 비밀번호 수정
+  public void updateMemberPassword(MemberUpdateDTO member) {
+    final String query = "UPDATE MEMBER SET PASSWORD = ? WHERE ID  =? AND NAME = ?";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+      connection.setAutoCommit(false);
+
+      pstmt.setString(1, member.getMemberPassword());
+      pstmt.setString(2, member.getMemberId());
+      pstmt.setString(3, member.getMemberName());
+
+      pstmt.executeUpdate();
+
+      connection.commit();
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+  //회원 별명 수정
+  public void updateMemberNickName(MemberSignUpDTO[] member) {
+    final String query = "UPDATE MEMBER SET NICKNAME =? WHERE ID =?";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+      connection.setAutoCommit(false);
+
+      for (int i = 0; i < member.length; i++) {
+        if (member[i].getMemberId() == null) break;
+
+        pstmt.setString(1, member[i].getMemberNickName());
+
+        pstmt.addBatch();
+        pstmt.clearParameters();
+      }
+      int[] retValue = pstmt.executeBatch();
+      connection.commit();
+
+      System.out.println(retValue.length + "건의 사항이 처리되었습니다.");
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  //회원삭제
+  public void deleteMemberID(MemberSignUpDTO[] member) {
+    final String query = "DELETE FROM MEMBER WHERE ID =?";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+      connection.setAutoCommit(false);
+
+      for (int i = 0; i < member.length; i++) {
+        if (member[i].getMemberId() == null) break;
+
+        pstmt.setString(1, member[i].getMemberId());
+
+        pstmt.addBatch();
+        pstmt.clearParameters();
+      }
+
+      int[] retValue = pstmt.executeBatch();
+      connection.commit();
+
+      System.out.println(retValue.length + "건의 사항이 처리되었습니다.");
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+}
