@@ -1,6 +1,7 @@
 package foodie.service;
 
 
+import foodie.Input;
 import foodie.dto.MemberLoginDTO;
 import foodie.dto.MemberSignUpDTO;
 import foodie.dto.MemberUpdateDTO;
@@ -10,11 +11,13 @@ import foodie.handler.LoginRequestArgumentHandler;
 import foodie.handler.SignUpRequestArgumentHandler;
 import foodie.dao.MemberDAO;
 
-import java.util.Scanner;
 
 public class MemberServiceOption {
+  private String password;
 
-  Scanner sc = new Scanner(System.in);
+  Input input = Input.getInstance();
+  MemberDAO memberDAO = MemberDAO.getInstance();
+
 
   MemberSignUpDTO signUpDTO = new MemberSignUpDTO();
   MemberLoginDTO loginDTO = new MemberLoginDTO();
@@ -24,20 +27,20 @@ public class MemberServiceOption {
   LoginRequestArgumentHandler loginRequestArgumentHandler = new LoginRequestArgumentHandler();
   FindRequestArgumentHandler findRequestArgumentHandler = new FindRequestArgumentHandler();
 
-  MemberDAO memberDAO = new MemberDAO();
+
 
   public void loginMember() {
     try {
       System.out.print("아이디 : ");
-      loginDTO.setMemberId(sc.nextLine());
+      loginDTO.setMemberId(input.getString());
       System.out.print("비밀번호 : ");
-      loginDTO.setMemberPassword(sc.nextLine());
+      loginDTO.setMemberPassword(input.getString());
 
       loginRequestArgumentHandler.loginStandard(loginDTO.getMemberId(), loginDTO.getMemberPassword());
 
       memberDAO.loginMember(loginDTO.getMemberId(), loginDTO.getMemberPassword());
       System.out.println("로그인 성공");
-
+      System.out.println();
     } catch (AuthenException e) {
       System.out.println(e.getMessage());
     }
@@ -46,36 +49,34 @@ public class MemberServiceOption {
 
   public void findId() {
     System.out.print("이름 : ");
-    signUpDTO.setMemberName(sc.nextLine());
+    signUpDTO.setMemberName(input.getString());
     System.out.print("이메일 : ");
-    signUpDTO.setMemberEmail(sc.nextLine());
+    signUpDTO.setMemberEmail(input.getString());
     memberDAO.getMemberID(signUpDTO.getMemberName(), signUpDTO.getMemberEmail());
     System.out.println();
 
   }
 
   public void findPassword() {
-    String password;
-
     try {
       System.out.print("아이디: ");
-      updateDTO.setMemberId(sc.nextLine());
+      updateDTO.setMemberId(input.getString());
       System.out.print("이름: ");
-      updateDTO.setMemberName(sc.nextLine());
+      updateDTO.setMemberName(input.getString());
 
       findRequestArgumentHandler.findPasswordInputCheck(updateDTO.getMemberId(), updateDTO.getMemberName());
 
       System.out.print("수정 할 비밀번호: ");
-      updateDTO.setMemberPassword(sc.nextLine());
+      updateDTO.setMemberPassword(input.getString());
       System.out.print("비밀번호 확인: ");
-      password = sc.nextLine();
+      password = input.getString();
 
       signUpRequestArgumentHandler.passwordStandard(updateDTO.getMemberPassword(), password);
 
       memberDAO.updateMemberPassword(updateDTO);
 
       System.out.println("비밀번호가 수정되었습니다");
-
+      System.out.println();
 
     } catch (AuthenException e) {
       System.out.println(e.getMessage());
@@ -91,13 +92,11 @@ public class MemberServiceOption {
     boolean checkNickName = true;
     boolean checkEmail = true;
 
-    String password;
-
 
     while (checkId) {
       try {
         System.out.print("* 아이디 : ");
-        signUpDTO.setMemberId(sc.nextLine());
+        signUpDTO.setMemberId(input.getString());
         signUpRequestArgumentHandler.checkIDStandard(signUpDTO.getMemberId());
 
         checkId = false;
@@ -111,10 +110,10 @@ public class MemberServiceOption {
     while (checkPassword) {
       try {
         System.out.print("* 비밀번호 : ");
-        signUpDTO.setMemberPassword(sc.nextLine());
+        signUpDTO.setMemberPassword(input.getString());
 
         System.out.print("* 비밀번호 확인 : ");
-        password = sc.nextLine();
+        password = input.getString();
 
         signUpRequestArgumentHandler.passwordStandard(signUpDTO.getMemberPassword(), password);
 
@@ -130,7 +129,7 @@ public class MemberServiceOption {
     while (checkName) {
       try {
         System.out.print("* 이름 : ");
-        signUpDTO.setMemberName(sc.nextLine());
+        signUpDTO.setMemberName(input.getString());
 
         signUpRequestArgumentHandler.nameStandard(signUpDTO.getMemberName());
 
@@ -145,7 +144,7 @@ public class MemberServiceOption {
     while (checkNickName) {
       try {
         System.out.print("* 별명 : ");
-        signUpDTO.setMemberNickName(sc.nextLine());
+        signUpDTO.setMemberNickName(input.getString());
 
         signUpRequestArgumentHandler.nickNameStandard(signUpDTO.getMemberNickName());
 
@@ -158,7 +157,7 @@ public class MemberServiceOption {
       while (checkEmail) {
         try {
           System.out.print("* 이메일 :");
-          signUpDTO.setMemberEmail(sc.nextLine());
+          signUpDTO.setMemberEmail(input.getString());
 
           signUpRequestArgumentHandler.emailStandard(signUpDTO.getMemberEmail());
 
@@ -170,8 +169,53 @@ public class MemberServiceOption {
       }
     }
     memberDAO.insertMember(signUpDTO);
+    System.out.println("회원가입이 완료되었습니다.");
+    System.out.println();
   }
 
+  public void updateMemberPassword() {
+    try {
+      System.out.print("수정할 사용자 이름 : ");
+      updateDTO.setMemberName(input.getString());
 
+      findRequestArgumentHandler.findNameCheck(updateDTO.getMemberName());
 
+      System.out.print("수정 할 비밀번호: ");
+      updateDTO.setMemberPassword(input.getString());
+      System.out.print("비밀번호 확인: ");
+      password = input.getString();
+
+      signUpRequestArgumentHandler.passwordStandard(updateDTO.getMemberPassword(), password);
+
+      memberDAO.updateMemberPassword(updateDTO);
+
+      System.out.println("비밀번호가 수정되었습니다");
+      System.out.println();
+
+    } catch (AuthenException e) {
+      System.out.println(e.getMessage());
+    }
+  }
+
+  public void updateMemberNickName() {
+    try {
+      System.out.print("수정할 사용자 이름 : ");
+      updateDTO.setMemberName(input.getString());
+
+      findRequestArgumentHandler.findNameCheck(updateDTO.getMemberName());
+
+      System.out.print("수정 할 별명: ");
+      updateDTO.setMemberNickName(input.getString());
+
+      findRequestArgumentHandler.checkDuplicateNickName(updateDTO.getMemberNickName());
+
+      memberDAO.updateMemberNickName(updateDTO);
+
+      System.out.println("별명이 수정되었습니다");
+      System.out.println();
+
+    } catch (AuthenException e) {
+      System.out.println(e.getMessage());
+    }
+  }
 }

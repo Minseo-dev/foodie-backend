@@ -1,10 +1,13 @@
 package foodie.ui;
 
-import foodie.member.MemberServiceOption;
+
+import foodie.service.MemberServiceOption;
 
 import java.util.Scanner;
 
 enum ServiceOption {TERMINATED, LOGIN, FIND_ID, FIND_PASSWORD, SIGNUP}
+
+enum UpdateOption {TERMINATED, PASSWORD, NICKNAME}
 
 public class MemberUI {
   Scanner sc = new Scanner(System.in);
@@ -29,7 +32,7 @@ public class MemberUI {
       switch (serviceOption) {
         case LOGIN:
           memberServiceOption.loginMember();
-          System.out.println("로그인 성공");
+          updateProfile();
           break;
         case FIND_ID:
           memberServiceOption.findId();
@@ -39,11 +42,28 @@ public class MemberUI {
           break;
         case SIGNUP:
           memberServiceOption.signUpMember();
-          System.out.println("회원가입이 완료되었습니다.");
           break;
       }
     }
   }
 
+  public void updateProfile() {
+
+    UpdateOption updateOption = null;
+
+    while (updateOption != UpdateOption.TERMINATED) {
+      System.out.println("----- 회원정보 수정 -----");
+      int number = getNumInput("[1] 비밀번호 변경 [2] 별명 변경 [0] 종료");
+      updateOption = UpdateOption.values()[number];
+      switch (updateOption) {
+        case PASSWORD:
+          memberServiceOption.updateMemberPassword();
+          break;
+        case NICKNAME:
+          memberServiceOption.updateMemberNickName();
+          break;
+      }
+    }
+  }
 
 }

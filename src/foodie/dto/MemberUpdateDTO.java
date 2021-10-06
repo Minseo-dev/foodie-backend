@@ -4,6 +4,7 @@ public class MemberUpdateDTO {
   private String memberId;
   private String memberPassword;
   private String memberName;
+  private String memberNickName;
 
 
   public String getMemberId() {
@@ -29,5 +30,13 @@ public class MemberUpdateDTO {
 
   public void setMemberPassword(String memberPassword) {
     this.memberPassword = memberPassword;
+  }
+
+  public String getMemberNickName() {
+    return memberNickName;
+  }
+
+  public void setMemberNickName(String memberNickName) {
+    this.memberNickName = memberNickName;
   }
 }

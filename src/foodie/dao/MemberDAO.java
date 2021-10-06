@@ -3,10 +3,21 @@ package foodie.dao;
 import foodie.DBAccess;
 import foodie.dto.MemberSignUpDTO;
 import foodie.dto.MemberUpdateDTO;
+import foodie.service.MemberServiceOption;
 
 import java.sql.*;
 
 public class MemberDAO {
+
+  private static MemberDAO instance = null;
+
+  public static MemberDAO getInstance() {
+    if (instance == null) {
+      instance = new MemberDAO();
+    }
+    return instance;
+  }
+
 
   //회원 로그인
   public boolean loginMember(String memberId, String memberPassword) {
@@ -64,27 +75,6 @@ public class MemberDAO {
 
   }
 
-  //회원 아이디,이름 찾기
-  public boolean checkIdName(String memberName, String memberEmail) {
-    final String query = "SELECT ID, NAME FROM MEMBER WHERE ID = ? AND NAME = ?  ";
-
-    try (Connection connection = DBAccess.setConnection();
-         PreparedStatement pstmt = connection.prepareStatement(query)) {
-
-      pstmt.setString(1, memberName);
-      pstmt.setString(2, memberEmail);
-
-      try (ResultSet rs = pstmt.executeQuery()) {
-        if (rs.next()) {
-          return true;
-        }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return false;
-  }
-
   //회원 ID 찾기
   public String getMemberID(String memberName, String memberEmail) {
     final String query = "SELECT ID FROM MEMBER WHERE NAME = ? AND EMAIL = ? ";
@@ -106,7 +96,7 @@ public class MemberDAO {
     return null;
   }
 
-  //회원 아이디 중복 check
+  //회원 아이디 중복 찾기
   public boolean duplicateCheckID(String memberID) {
     final String query = "SELECT ID FROM MEMBER WHERE ID = ?";
 
@@ -127,9 +117,9 @@ public class MemberDAO {
     return false;
   }
 
-  //회원 아이디,이름 찾기
+  //회원 이름 중복 찾기
   public boolean duplicateCheckName(String memberName) {
-    final String query = "SELECT ID, NAME FROM MEMBER WHERE NAME = ?  ";
+    final String query = "SELECT NAME FROM MEMBER WHERE NAME = ?  ";
 
     try (Connection connection = DBAccess.setConnection();
          PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -147,27 +137,44 @@ public class MemberDAO {
     return false;
   }
 
+  //중복 별명 찾기
+  public boolean duplicateCheckNickName(String memberNickName) {
+    final String query = "SELECT NICKNAME FROM MEMBER WHERE NICKNAME = ?";
+
+    try (Connection connection = DBAccess.setConnection();
+         PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+      pstmt.setString(1, memberNickName);
+
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          return true;
+        }
+      }
+
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+
   //회원 비밀번호, 별명 수정
-  public void updateMemberInfoAll(MemberSignUpDTO[] member) {
-    final String query = "UPDATE MEMBER SET PASSWORD = ?, NICKNAME =? WHERE ID =?";
+  public void updateMemberInfoAll(MemberUpdateDTO member) {
+    final String query = "UPDATE MEMBER SET PASSWORD = ?, NICKNAME =? WHERE NAME = ?";
 
     try (Connection connection = DBAccess.setConnection();
          PreparedStatement pstmt = connection.prepareStatement(query)) {
       connection.setAutoCommit(false);
 
-      for (int i = 0; i < member.length; i++) {
-        if (member[i].getMemberId() == null) break;
 
-        pstmt.setString(1, member[i].getMemberPassword());
-        pstmt.setString(2, member[i].getMemberNickName());
+      pstmt.setString(1, member.getMemberPassword());
+      pstmt.setString(2, member.getMemberNickName());
+      pstmt.setString(3, member.getMemberName());
 
-        pstmt.addBatch();
-        pstmt.clearParameters();
-      }
-      int[] retValue = pstmt.executeBatch();
+      pstmt.executeUpdate();
+
       connection.commit();
-
-      System.out.println(retValue.length + "건의 사항이 처리되었습니다.");
 
     } catch (SQLException e) {
       e.printStackTrace();
@@ -177,15 +184,15 @@ public class MemberDAO {
 
   //회원 비밀번호 수정
   public void updateMemberPassword(MemberUpdateDTO member) {
-    final String query = "UPDATE MEMBER SET PASSWORD = ? WHERE ID  =? AND NAME = ?";
+    final String query = "UPDATE MEMBER SET PASSWORD = ? WHERE NAME  =?";
 
     try (Connection connection = DBAccess.setConnection();
          PreparedStatement pstmt = connection.prepareStatement(query)) {
       connection.setAutoCommit(false);
 
       pstmt.setString(1, member.getMemberPassword());
-      pstmt.setString(2, member.getMemberId());
-      pstmt.setString(3, member.getMemberName());
+      pstmt.setString(2, member.getMemberName());
+
 
       pstmt.executeUpdate();
 
@@ -198,25 +205,19 @@ public class MemberDAO {
 
 
   //회원 별명 수정
-  public void updateMemberNickName(MemberSignUpDTO[] member) {
-    final String query = "UPDATE MEMBER SET NICKNAME =? WHERE ID =?";
+  public void updateMemberNickName(final MemberUpdateDTO member) {
+    final String query = "UPDATE MEMBER SET NICKNAME =? WHERE NAME =?";
 
     try (Connection connection = DBAccess.setConnection();
          PreparedStatement pstmt = connection.prepareStatement(query)) {
       connection.setAutoCommit(false);
 
-      for (int i = 0; i < member.length; i++) {
-        if (member[i].getMemberId() == null) break;
 
-        pstmt.setString(1, member[i].getMemberNickName());
+      pstmt.setString(1, member.getMemberNickName());
+      pstmt.setString(2, member.getMemberName());
 
-        pstmt.addBatch();
-        pstmt.clearParameters();
-      }
-      int[] retValue = pstmt.executeBatch();
+      pstmt.executeUpdate();
       connection.commit();
-
-      System.out.println(retValue.length + "건의 사항이 처리되었습니다.");
 
     } catch (SQLException e) {
       e.printStackTrace();
