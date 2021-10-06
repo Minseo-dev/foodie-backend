@@ -11,7 +11,7 @@ public class SignUpRequestArgumentHandler extends Throwable {
 
   public static final Pattern EMAIL_REGEX = Pattern.compile("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", Pattern.CASE_INSENSITIVE);
 
-  MemberDAO memberDAO = new MemberDAO();
+  MemberDAO memberDAO = MemberDAO.getInstance();
 
   public void checkIDStandard(String id) throws AuthenException {
 

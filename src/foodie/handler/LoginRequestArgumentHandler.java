@@ -5,7 +5,7 @@ import foodie.dao.MemberDAO;
 
 public class LoginRequestArgumentHandler {
 
-  MemberDAO memberDAO = new MemberDAO();
+  MemberDAO memberDAO = MemberDAO.getInstance();
 
   public void loginStandard(String id, String password) throws AuthenException {
 
