@@ -11,10 +11,10 @@ public class Foodie {
     MemberUI memberUi = new MemberUI();
     memberUi.run();
 
-//
-//    //관리자 UI
-//    SupervisorUI supervisorUI = new SupervisorUI();
-//    supervisorUI.run();
+
+    //관리자 UI
+    SupervisorUI supervisorUI = new SupervisorUI();
+    supervisorUI.run();
 
   }
 
