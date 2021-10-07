@@ -1,28 +1,29 @@
 package foodie.ui;
 
-
+import foodie.Input;
+import foodie.service.HelpCenter;
 import foodie.service.MemberServiceOption;
 
-import java.util.Scanner;
 
-enum ServiceOption {TERMINATED, LOGIN, FIND_ID, FIND_PASSWORD, SIGNUP}
+enum ServiceOption {TERMINATED, LOGIN, FIND_ID, FIND_PASSWORD, SIGNUP, DELETE}
 
-enum UpdateOption {TERMINATED, PASSWORD, NICKNAME}
+enum UpdateOption {TERMINATED, PASSWORD, NICKNAME, REPORT}
 
 public class MemberUI {
-  Scanner sc = new Scanner(System.in);
+  Input input = Input.getInstance();
 
   MemberServiceOption memberServiceOption = new MemberServiceOption();
+  HelpCenter helpCenter = new HelpCenter();
 
   private ServiceOption menu() {
     System.out.println("Welcome to Foodie");
-    int number = getNumInput("[1] 로그인 [2] 아이디 찾기 [3] 비밀번호 찾기 [4] 회원가입 [0] 종료");
-    return ServiceOption.values()[number];
+    String number = getNumInput("[1] 로그인 [2] 아이디 찾기 [3] 비밀번호 찾기 [4] 회원가입 [5] 탈퇴 [0] 종료");
+    return ServiceOption.values()[Integer.parseInt(number)];
   }
 
-  private int getNumInput(String msg) {
+  private String getNumInput(String msg) {
     System.out.println(msg);
-    return sc.nextInt(); //nextInt 문제 많음
+    return input.getNumber();
   }
 
   public void run() {
@@ -43,6 +44,9 @@ public class MemberUI {
         case SIGNUP:
           memberServiceOption.signUpMember();
           break;
+        case DELETE:
+          memberServiceOption.deleteMember();
+          break;
       }
     }
   }
@@ -53,8 +57,8 @@ public class MemberUI {
 
     while (updateOption != UpdateOption.TERMINATED) {
       System.out.println("----- 회원정보 수정 -----");
-      int number = getNumInput("[1] 비밀번호 변경 [2] 별명 변경 [0] 종료");
-      updateOption = UpdateOption.values()[number];
+      String number = getNumInput("[1] 비밀번호 변경 [2] 별명 변경 [3] 신고 [0] 종료");
+      updateOption = UpdateOption.values()[Integer.parseInt(number)];
       switch (updateOption) {
         case PASSWORD:
           memberServiceOption.updateMemberPassword();
@@ -62,6 +66,8 @@ public class MemberUI {
         case NICKNAME:
           memberServiceOption.updateMemberNickName();
           break;
+        case REPORT:
+          helpCenter.addReportMember();
       }
     }
   }

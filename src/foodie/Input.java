@@ -18,11 +18,11 @@ public class Input {
     return instance;
   }
 
-  public int getInt() {
+  public String getNumber() {
     while (!scanner.hasNextInt()) {
       System.out.println("숫자를 입력해주세요");
     }
-    return scanner.nextInt();
+    return scanner.nextLine();
   }
 
   public String getString() {

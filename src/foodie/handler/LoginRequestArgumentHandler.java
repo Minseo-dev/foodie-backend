@@ -1,15 +1,15 @@
 package foodie.handler;
 
 import foodie.exception.AuthenException;
-import foodie.dao.MemberDAO;
+import foodie.dao.MemberDaoImpl;
 
-public class LoginRequestArgumentHandler {
+public class LoginRequestArgumentHandler extends Throwable {
 
-  MemberDAO memberDAO = MemberDAO.getInstance();
+  MemberDaoImpl memberDaoImpl = MemberDaoImpl.getInstance();
 
-  public void loginStandard(String id, String password) throws AuthenException {
+  public void loginStandard(String id,String password ) throws AuthenException {
 
-    if (!memberDAO.loginMember(id, password)) {
+    if (!memberDaoImpl.getMemberLoginObject(id, password)) {
       throw new AuthenException("아이디 또는 비밀번호를 잘못입력하셨습니다.");
     }
   }
